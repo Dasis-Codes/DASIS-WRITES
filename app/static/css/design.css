@@ -894,3 +894,21 @@ body:has(.note-editor.note-frame.fullscreen) header {
     z-index: 1055 !important;
     background: rgba(0, 0, 0, 0.5); /* Replaces Bootstrap's broken backdrop cleanly */
 }
+
+/*FULL PAGE BLOG POST */
+/* Allow the post block to expand */
+.post-full-width {
+    width: 100% !important;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2.5rem !important;
+}
+
+/* Ensure embedded images scale smoothly within the post */
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5rem auto;
+    border-radius: 8px;
+}

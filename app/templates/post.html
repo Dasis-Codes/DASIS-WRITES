@@ -1,36 +1,39 @@
 {% extends "layout.html" %}
 {% block content %}
-<article class="content-section">
-    <div class="article-metadata border-bottom pb-3 mb-3">
-        <img class="article-img mr-3" src="{{ url_for('static', filename='pics/' + post.author.image_file) }}"
-            alt="{{ post.author.username }}'s avatar">
-        <div class="d-flex flex-column">
-            <a class="font-weight-bold text-dark text-decoration-none"
-                href="{{ url_for('user.user_posts', username=post.author.username) }}">
-                {{ post.author.username }}
-            </a>
-            <small class="text-muted">{{ post.date_posted.strftime('%B %d, %Y') }}</small>
-        </div>
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-11 col-xl-10">
+        <article class="content-section p-4 p-md-5">
+            <div class="article-metadata border-bottom pb-3 mb-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img class="article-img mr-3 rounded-circle" src="{{ url_for('static', filename='pics/' + post.author.image_file) }}"
+                        alt="{{ post.author.username }}'s avatar">
+                    <div class="d-flex flex-column">
+                        <a class="font-weight-bold text-dark text-decoration-none"
+                            href="{{ url_for('user.user_posts', username=post.author.username) }}">
+                            {{ post.author.username }}
+                        </a>
+                        <small class="text-muted">{{ post.date_posted.strftime('%B %d, %Y') }}</small>
+                    </div>
+                </div>
 
-        {% if post.author == current_user or current_user.is_admin %}
-        <div class="mt-3">
-            <!-- Show Edit button ONLY to the author -->
-            {% if post.author == current_user %}
-            <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Edit</a>
-            {% endif %}
+                {% if post.author == current_user or current_user.is_admin %}
+                <div>
+                    {% if post.author == current_user %}
+                    <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Edit</a>
+                    {% endif %}
+                    <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal"
+                        data-target="#deleteModal">Delete</button>
+                </div>
+                {% endif %}
+            </div>
 
-            <!-- Show Delete button to both the author AND the admin -->
-            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal"
-                data-target="#deleteModal">Delete</button>
-        </div>
-        {% endif %}
+            <h1 class="article-title mb-4 font-weight-bold">{{ post.title }}</h1>
+            <div class="article-content">
+                {{ post.content | safe }}
+            </div>
+        </article>
     </div>
-
-    <h2 class="article-title text-dark mb-3">{{ post.title }}</h2>
-    <div class="article-content">
-        {{ post.content | safe }}
-    </div>
-</article>
+</div>
 {% endblock content %}
 
 {% block modals %}
