@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='pics/favicon.png') }}" type="image/png">
     {% if title %}
     <title>DASIS WRITES — {{ title }}</title>
     {% else %}
@@ -35,8 +36,9 @@
     <!-- Glassmorphic Preloader -->
     <div id="preloader">
         <div class="loader-content text-center">
-            <div class="loader-orb mb-3">
-                <i class="fas fa-layer-group"></i>
+            <div class="loader-orb mb-3 d-flex align-items-center justify-content-center">
+                <img src="{{ url_for('static', filename='pics/favicon.png') }}" alt="DASIS WRITES Logo"
+                    class="img-fluid rounded-circle" style="max-height: 50px; width: auto;">
             </div>
             <h5 class="brand-title mb-0">DASIS WRITES</h5>
             <div class="loader-bar mx-auto mt-3">
@@ -89,7 +91,8 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-dismissible fade show border-0 shadow-sm rounded-lg mb-4" role="alert">
+        <div class="alert alert-{{ category }} alert-dismissible fade show border-0 shadow-sm rounded-lg mb-4"
+            role="alert">
             {{ message }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -110,21 +113,20 @@
     <!-- Footer -->
     <footer class="container my-5">
         <div class="footer-gradient-box p-4 p-md-5">
-            <div class="row gy-4">
+            <div class="row g-4">
                 <!-- Brand & Mission Column -->
                 <div class="col-lg-5 mb-4 mb-lg-0">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="brand-icon-wrapper mr-3">
-                            <i class="fas fa-layer-group text-white"></i>
-                        </div>
-                        <h5 class="brand-title mb-0">DASIS WRITES</h5>
+                        <img src="{{ url_for('static', filename='pics/favicon.png') }}" alt="DASIS WRITES Logo"
+                            class="footer-logo me-3" style="width: 36px; height: 36px; object-fit: contain;">
+                        <h5 class="brand-title mb-0 lh-1">   DASIS WRITES</h5>
                     </div>
-                    <p class="text-muted small pr-lg-4 mb-4">
+                    <p class="text-muted small pe-lg-4 mb-4">
                         The digital sandbox of DASIS. Built fast with Flask and modern, independent styling
                     </p>
-                    <div class="d-flex align-items-center social-links">
-                        <a href="#" class="social-btn mr-2" aria-label="Github"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-btn mr-2" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <div class="d-flex align-items-center gap-2 social-links">
+                        <a href="#" class="social-btn" aria-label="Github"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-btn" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                         <a href="#" class="social-btn" aria-label="Discord"><i class="fab fa-discord"></i></a>
                     </div>
                 </div>
@@ -134,20 +136,25 @@
                     <h6 class="font-weight-bold text-dark small text-uppercase tracking-wider mb-3">Explore</h6>
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2"><a href="{{ url_for('main.home') }}" class="footer-link">Home Feed</a></li>
-                        <li class="mb-2"><a href="{{ url_for('main.about') }}" class="footer-link">About Platform</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.about') }}" class="footer-link">About Platform</a>
+                        </li>
                         {% if current_user.is_authenticated %}
-                        <li class="mb-2"><a href="{{ url_for('posts.new_post') }}" class="footer-link">Write a Post</a></li>
-                        <li class="mb-2"><a href="{{ url_for('user.account') }}" class="footer-link">Account Settings</a></li>
+                        <li class="mb-2"><a href="{{ url_for('posts.new_post') }}" class="footer-link">Write a Post</a>
+                        </li>
+                        <li class="mb-2"><a href="{{ url_for('user.account') }}" class="footer-link">Account
+                                Settings</a></li>
                         {% else %}
                         <li class="mb-2"><a href="{{ url_for('user.login') }}" class="footer-link">Sign In</a></li>
-                        <li class="mb-2"><a href="{{ url_for('user.register') }}" class="footer-link">Create Account</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.register') }}" class="footer-link">Create Account</a>
+                        </li>
                         {% endif %}
                     </ul>
                 </div>
 
                 <!-- Legal & System -->
                 <div class="col-6 col-lg-4">
-                    <h6 class="font-weight-bold text-dark small text-uppercase tracking-wider mb-3">Resources & Legal</h6>
+                    <h6 class="font-weight-bold text-dark small text-uppercase tracking-wider mb-3">Resources & Legal
+                    </h6>
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2"><a href="#" class="footer-link">Privacy Policy</a></li>
                         <li class="mb-2"><a href="#" class="footer-link">Terms of Service</a></li>
@@ -250,14 +257,14 @@
         function resizeAndInsertImage(file, editor) {
             let reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 let img = new Image();
                 img.src = e.target.result;
-                img.onload = function() {
+                img.onload = function () {
                     let canvas = document.createElement('canvas');
                     let max_width = 1200;
                     let scale = max_width / img.width;
-                    
+
                     if (scale < 1) {
                         canvas.width = max_width;
                         canvas.height = img.height * scale;
@@ -295,7 +302,7 @@
                         ['view', ['fullscreen', 'codeview']]
                     ],
                     callbacks: {
-                        onImageUpload: function(files) {
+                        onImageUpload: function (files) {
                             for (let i = 0; i < files.length; i++) {
                                 resizeAndInsertImage(files[i], this);
                             }
