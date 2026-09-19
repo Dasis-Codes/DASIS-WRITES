@@ -5,8 +5,20 @@
         <article class="content-section p-4 p-md-5">
             <div class="article-metadata border-bottom pb-3 mb-3 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
-                    <img class="article-img mr-3 rounded-circle" src="{{ url_for('static', filename='pics/' + post.author.image_file) }}"
-                        alt="{{ post.author.username }}'s avatar">
+                    {% if post.author and post.author.image_file and post.author.image_file.startswith('http') %}
+                        {% set author_img = post.author.image_file %}
+                    {% elif post.author and post.author.image_file %}
+                        {% set author_img = url_for('static', filename='pics/' + post.author.image_file) %}
+                    {% else %}
+                        {% set author_img = url_for('static', filename='pics/default.jpg') %}
+                    {% endif %}
+
+                    <img class="article-img mr-3 rounded-circle" 
+                         src="{{ author_img }}"
+                         alt="{{ post.author.username }}'s avatar"
+                         onerror="this.src='{{ url_for('static', filename='pics/default.jpg') }}';"
+                         style="width: 48px; height: 48px; object-fit: cover;">
+                         
                     <div class="d-flex flex-column">
                         <a class="font-weight-bold text-dark text-decoration-none"
                             href="{{ url_for('user.user_posts', username=post.author.username) }}">
@@ -34,6 +46,15 @@
         </article>
     </div>
 </div>
+
+<!-- Fallback handler for inline content images -->
+<script>
+    document.querySelectorAll('.article-content img').forEach(img => {
+        img.onerror = function() {
+            this.style.display = 'none'; // Hides broken inline images gracefully
+        };
+    });
+</script>
 {% endblock content %}
 
 {% block modals %}

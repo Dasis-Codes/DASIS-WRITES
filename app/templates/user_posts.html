@@ -2,7 +2,19 @@
 {% block content %}
     <!-- Profile Header Banner -->
     <div class="content-section d-flex align-items-center mb-4">
-        <img class="account-img mr-4" src="{{ url_for('static', filename='pics/' + user.image_file) }}" alt="{{ user.username }}'s avatar">
+        {% if user and user.image_file and user.image_file.startswith('http') %}
+            {% set profile_img = user.image_file %}
+        {% elif user and user.image_file %}
+            {% set profile_img = url_for('static', filename='pics/' + user.image_file) %}
+        {% else %}
+            {% set profile_img = url_for('static', filename='pics/default.jpg') %}
+        {% endif %}
+
+        <img class="account-img mr-4" 
+             src="{{ profile_img }}" 
+             alt="{{ user.username }}'s avatar"
+             onerror="this.src='{{ url_for('static', filename='pics/default.jpg') }}';"
+             style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;">
         <div>
             <h2 class="font-weight-bold text-dark mb-1">{{ user.username }}</h2>
             <p class="text-muted mb-0">Posts published: <span class="badge badge-primary badge-pill px-2 py-1">{{ posts.total }}</span></p>
@@ -12,8 +24,21 @@
     <!-- User Posts List -->
     {% for post in posts.items %}
         <article class="content-section">
-            <div class="article-metadata">
-                <img class="article-img mr-3" src="{{ url_for('static', filename='pics/' + post.author.image_file) }}" alt="{{ post.author.username }}'s avatar">
+            <div class="article-metadata d-flex align-items-center">
+                {% if post.author and post.author.image_file and post.author.image_file.startswith('http') %}
+                    {% set author_img = post.author.image_file %}
+                {% elif post.author and post.author.image_file %}
+                    {% set author_img = url_for('static', filename='pics/' + post.author.image_file) %}
+                {% else %}
+                    {% set author_img = url_for('static', filename='pics/default.jpg') %}
+                {% endif %}
+
+                <img class="article-img mr-3" 
+                     src="{{ author_img }}" 
+                     alt="{{ post.author.username }}'s avatar"
+                     onerror="this.src='{{ url_for('static', filename='pics/default.jpg') }}';"
+                     style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%;">
+                
                 <div class="d-flex flex-column">
                     <a class="font-weight-bold text-dark text-decoration-none" href="{{ url_for('user.user_posts', username=post.author.username) }}">
                         {{ post.author.username }}

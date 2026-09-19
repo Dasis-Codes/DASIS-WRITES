@@ -3,7 +3,20 @@
     <div class="content-section">
         <div class="media">
             <div class="position-relative">
-                <img id="profile-image" class="rounded-circle account-img" src="{{ image_file }}">
+                {% if image_file and image_file.startswith('http') %}
+                    {% set avatar_src = image_file %}
+                {% elif image_file %}
+                    {% set avatar_src = url_for('static', filename='pics/' + image_file) %}
+                {% else %}
+                    {% set avatar_src = url_for('static', filename='pics/default.jpg') %}
+                {% endif %}
+
+                <img id="profile-image" 
+                     class="rounded-circle account-img" 
+                     src="{{ avatar_src }}" 
+                     alt="{{ current_user.username }}'s avatar"
+                     onerror="this.src='{{ url_for('static', filename='pics/default.jpg') }}';">
+                
                 <div class="image-overlay position-absolute rounded-circle" style="display: none;">
                     <div class="d-flex flex-column align-items-center justify-content-center h-100">
                         <i class="fas fa-camera text-white mb-2" style="font-size: 24px;"></i>
@@ -13,8 +26,8 @@
                 <input type="file" id="picture-input" accept="image/*" class="d-none">
             </div>
             <div class="media-body ml-3">
-                <h2 class="account-heading">{{current_user.username}}</h2>
-                <p class="text-secondary">{{current_user.email}}</p>
+                <h2 class="account-heading">{{ current_user.username }}</h2>
+                <p class="text-secondary">{{ current_user.email }}</p>
                 <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('picture-input').click()">
                     <i class="fas fa-upload"></i> Change Picture
                 </button>
@@ -25,7 +38,7 @@
             <form method="POST" action="" enctype="multipart/form-data" id="account-form">
                 {{ form.hidden_tag() }}
                 <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">{{current_user.username}} Account</legend>
+                    <legend class="border-bottom mb-4">{{ current_user.username }} Account</legend>
                     
                     <div class="form-group">
                         {{ form.username.label(class="form-control-label") }}
@@ -90,7 +103,7 @@
         </div>
     </div>
 
-    <!-- Modal for Cropping (Optional Enhancement) -->
+    <!-- Modal for Cropping -->
     <div class="modal fade" id="cropModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -272,7 +285,6 @@
                 return;
             }
             
-            // You can add more validation here
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 e.preventDefault();
@@ -281,10 +293,4 @@
             }
         });
     </script>
-    
-    <!-- Optional: Include Cropper.js for image cropping (add this in layout.html if you want cropping) -->
-    <!--
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    -->
 {% endblock content %}

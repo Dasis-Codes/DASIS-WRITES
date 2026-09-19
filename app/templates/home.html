@@ -50,10 +50,20 @@
     
     {% for post in feed_posts %}
         <article class="media content-section glass-card p-4 mb-4">
+            {% if post.author and post.author.image_file and post.author.image_file.startswith('http') %}
+                {% set author_img = post.author.image_file %}
+            {% elif post.author and post.author.image_file %}
+                {% set author_img = url_for('static', filename='pics/' + post.author.image_file) %}
+            {% else %}
+                {% set author_img = url_for('static', filename='pics/default.jpg') %}
+            {% endif %}
+
             <img class="article-img mr-3" 
-                 src="{% if post.author and post.author.image_file %}{{ url_for('static', filename='pics/' + post.author.image_file) }}{% else %}{{ url_for('static', filename='pics/default.jpg') }}{% endif %}" 
+                 src="{{ author_img }}" 
                  alt="{{ post.author.username if post.author else 'User' }}" 
+                 onerror="this.src='{{ url_for('static', filename='pics/default.jpg') }}';"
                  style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%;">
+
             <div class="media-body">
                 <div class="article-metadata mb-2">
                     <a class="mr-2 font-weight-bold" href="{{ url_for('user.user_posts', username=post.author.username) if post.author else '#' }}">

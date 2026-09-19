@@ -1,29 +1,45 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="content-section">
-    <form method="POST" action="">
+<div class="content-section p-4 p-md-5">
+    <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <legend class="border-bottom mb-4 font-weight-bold">{{ legend }}</legend>
 
             <!-- Title Field -->
             <div class="form-group mb-3">
-                {{ form.title.label(class="form-control-label") }}
+                {{ form.title.label(class="form-control-label font-weight-600") }}
                 {% if form.title.errors %}
-                {{ form.title(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.title.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
+                    {{ form.title(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
                 {% else %}
-                {{ form.title(class="form-control form-control-lg") }}
+                    {{ form.title(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
 
+            <!-- Optional Post Cover Image Field -->
+            {% if form.picture is defined or form.image is defined %}
+            <div class="form-group mb-3">
+                {% set image_field = form.picture if form.picture is defined else form.image %}
+                {{ image_field.label(class="form-control-label font-weight-600") }}
+                {{ image_field(class="form-control-file") }}
+                {% if image_field.errors %}
+                    <div class="text-danger small mt-1">
+                        {% for error in image_field.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
             <!-- Content Field (Summernote Target) -->
             <div class="form-group mb-3">
-                {{ form.content.label(class="form-control-label") }}
+                {{ form.content.label(class="form-control-label font-weight-600") }}
 
                 <!-- ID forced to "content" so $('#content').summernote() binds cleanly -->
                 {{ form.content(class="form-control", id="content") }}
@@ -31,15 +47,15 @@
                 {% if form.content.errors %}
                 <div class="text-danger small mt-1">
                     {% for error in form.content.errors %}
-                    <span>{{ error }}</span>
+                        <span>{{ error }}</span>
                     {% endfor %}
                 </div>
                 {% endif %}
             </div>
         </fieldset>
 
-        <div class="form-group mt-3">
-            {{ form.submit(class="btn btn-primary hero-btn") }}
+        <div class="form-group mt-4">
+            {{ form.submit(class="btn btn-primary hero-btn px-4") }}
         </div>
     </form>
 </div>

@@ -8,31 +8,37 @@ from flask import url_for
 from flask_mail import Message
 from flask import current_app
 from app import mail
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+)
 
 def save_picture(form_picture, output_size=(125, 125)):
+    """Uploads an image to Cloudinary, resizes it in the cloud,
+
+    and returns the permanent secure HTTPS URL.
     """
-    Save an uploaded picture (werkzeug FileStorage) to static/pics and return the filename.
-    Converts to RGB to avoid issues with some file modes.
-    """
-    # ensure the upload folder exists
-    upload_folder = os.path.join(current_app.root_path, "static", "pics")
-    os.makedirs(upload_folder, exist_ok=True)
+    # Cloudinary handles resizing directly during upload
+    upload_result = cloudinary.uploader.upload(
+        form_picture,
+        folder="profile_pics",  # Optional: keeps uploads organized in Cloudinary
+        transformation=[
+            {
+                "width": output_size[0],
+                "height": output_size[1],
+                "crop": "thumb",
+                "gravity": "face",
+            } 
+        ],
+    )
 
-    random_hex = secrets.token_hex(8)
-    # use secure_filename to avoid strange characters (we keep extension)
-    _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext.lower()
-    picture_path = os.path.join(upload_folder, picture_fn)
+    # Return the secure HTTPS URL to store in Neon DB
+    return upload_result["secure_url"]
 
-    # Use PIL to open and thumbnail
-    img = Image.open(form_picture)
-    # Convert to RGB (handles PNG with alpha etc.)
-    if img.mode != "RGB":
-        img = img.convert("RGB")
-    img.thumbnail(output_size)
-    img.save(picture_path)
-
-    return picture_fn
 
 def send_reset_email(user):
     token = user.get_reset_token()

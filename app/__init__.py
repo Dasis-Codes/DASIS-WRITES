@@ -5,7 +5,6 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from app.config import Config
 
-
 db = SQLAlchemy()
 bcrypt=Bcrypt()
 login_manager=LoginManager()
@@ -21,7 +20,7 @@ def create_app(config_class=Config):
 	app.config.from_object(Config)
 
 	app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-	app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
+	app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024
 
 	db.init_app(app)
 	bcrypt.init_app(app)
